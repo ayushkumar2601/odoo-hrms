@@ -11,21 +11,24 @@ const protectedRoutes = {
     "/dashboard/payroll", 
     "/dashboard/profile", 
     "/dashboard/settings",
-    "/dashboard/audit-logs"
+    "/dashboard/audit-logs",
+    "/dashboard/copilot"
   ],
   HR: [
     "/dashboard/hr", 
     "/dashboard/employees", 
     "/dashboard/attendance", 
     "/dashboard/leave", 
-    "/dashboard/profile"
+    "/dashboard/profile",
+    "/dashboard/copilot"
   ],
   EMPLOYEE: [
     "/dashboard/employee", 
     "/dashboard/profile", 
     "/dashboard/attendance", 
     "/dashboard/leave", 
-    "/dashboard/payroll"
+    "/dashboard/payroll",
+    "/dashboard/copilot"
   ],
 };
 

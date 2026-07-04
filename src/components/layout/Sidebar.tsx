@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { 
   LayoutDashboard, Users, CalendarClock, CalendarDays, 
-  Banknote, UserCircle, Settings, LogOut, Bell, Activity, ShieldCheck
+  Banknote, UserCircle, Settings, LogOut, Bell, Activity, ShieldCheck, Bot
 } from "lucide-react";
 
 export function Sidebar({ role }: { role: string }) {
@@ -27,6 +27,7 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Time & Attendance", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "Time Off", href: "/dashboard/leave", icon: CalendarDays },
     { name: "Payroll", href: "/dashboard/payroll", icon: Banknote },
+    { name: "AI Copilot", href: "/dashboard/copilot", icon: Bot },
   ];
 
   const hrLinks = [
@@ -34,6 +35,7 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Directory", href: "/dashboard/employees", icon: Users },
     { name: "Time & Attendance", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "Time Off", href: "/dashboard/leave", icon: CalendarDays },
+    { name: "AI Copilot", href: "/dashboard/copilot", icon: Bot },
   ];
 
   const employeeLinks = [
@@ -41,6 +43,7 @@ export function Sidebar({ role }: { role: string }) {
     { name: "My Time", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "My Time Off", href: "/dashboard/leave", icon: CalendarDays },
     { name: "My Pay", href: "/dashboard/payroll", icon: Banknote },
+    { name: "AI Copilot", href: "/dashboard/copilot", icon: Bot },
   ];
 
   const links = role === "ADMIN" ? adminLinks : role === "HR" ? hrLinks : employeeLinks;
