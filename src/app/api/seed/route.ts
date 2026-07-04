@@ -43,9 +43,51 @@ export async function GET() {
       }
     });
 
+    // Create 55 bulk employees for demo data
+    const fourMonthsAgo = new Date();
+    fourMonthsAgo.setMonth(fourMonthsAgo.getMonth() - 4);
+    
+    for (let i = 10; i <= 65; i++) {
+        const empId = `EMP${i.toString().padStart(4, '0')}`;
+        const email = `bulk.employee${i}@zindle.com`;
+        
+        const randomDays = Math.floor(Math.random() * 30);
+        const joiningDate = new Date(fourMonthsAgo);
+        joiningDate.setDate(joiningDate.getDate() + randomDays);
+        
+        const empUserId = uuidv4();
+        
+        const empUser = await prisma.user.create({
+            data: {
+                id: empUserId,
+                name: `Employee ${i}`,
+                email,
+                role: 'EMPLOYEE',
+                emailVerified: true,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            }
+        });
+        
+        await prisma.employee.create({
+            data: {
+                id: uuidv4(),
+                user: { connect: { id: empUser.id } },
+                employeeId: empId,
+                email: email,
+                firstName: 'Employee',
+                lastName: `${i}`,
+                department: ['Engineering', 'Marketing', 'Sales', 'HR', 'Support'][Math.floor(Math.random() * 5)],
+                designation: 'Staff',
+                joiningDate: joiningDate,
+                baseSalary: Math.floor(Math.random() * 50000) + 50000
+            }
+        });
+    }
+
     return NextResponse.json({ 
       success: true, 
-      message: "Database seeded successfully from the cloud!",
+      message: "Database seeded successfully from the cloud! Includes Admin and 55 Employees.",
       adminCredentials: {
         email: adminEmail,
         password: "You will set this via the /signup portal using Employee ID: EMP0001"
