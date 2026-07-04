@@ -12,7 +12,9 @@ const protectedRoutes = {
     "/dashboard/profile", 
     "/dashboard/settings",
     "/dashboard/audit-logs",
-    "/dashboard/copilot"
+    "/dashboard/copilot",
+    "/dashboard/reports",
+    "/dashboard/analytics"
   ],
   HR: [
     "/dashboard/hr", 
@@ -20,7 +22,9 @@ const protectedRoutes = {
     "/dashboard/attendance", 
     "/dashboard/leave", 
     "/dashboard/profile",
-    "/dashboard/copilot"
+    "/dashboard/copilot",
+    "/dashboard/reports",
+    "/dashboard/analytics"
   ],
   EMPLOYEE: [
     "/dashboard/employee", 
@@ -28,7 +32,8 @@ const protectedRoutes = {
     "/dashboard/attendance", 
     "/dashboard/leave", 
     "/dashboard/payroll",
-    "/dashboard/copilot"
+    "/dashboard/copilot",
+    "/dashboard/reports"
   ],
 };
 

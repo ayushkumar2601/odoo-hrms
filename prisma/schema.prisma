@@ -150,3 +150,13 @@ model AuditLog {
   metadata  String?  // JSON stringified context
   createdAt DateTime @default(now())
 }
+
+model Report {
+  id          String   @id @default(uuid())
+  title       String
+  type        String   // ATTENDANCE, LEAVE, PAYROLL, EMPLOYEE
+  generatedBy String
+  role        String
+  fileData    String?  // JSON stringified table data for PDF re-generation
+  createdAt   DateTime @default(now())
+}

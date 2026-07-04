@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { 
   LayoutDashboard, Users, CalendarClock, CalendarDays, 
-  Banknote, UserCircle, Settings, LogOut, Bell, Activity, ShieldCheck, Bot
+  Banknote, UserCircle, Settings, LogOut, Bell, Activity, ShieldCheck, Bot, FileText, TrendingUp
 } from "lucide-react";
 
 export function Sidebar({ role }: { role: string }) {
@@ -27,6 +27,8 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Time & Attendance", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "Time Off", href: "/dashboard/leave", icon: CalendarDays },
     { name: "Payroll", href: "/dashboard/payroll", icon: Banknote },
+    { name: "Analytics", href: "/dashboard/analytics", icon: TrendingUp },
+    { name: "Reports", href: "/dashboard/reports", icon: FileText },
     { name: "AI Copilot", href: "/dashboard/copilot", icon: Bot },
   ];
 
@@ -35,6 +37,8 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Directory", href: "/dashboard/employees", icon: Users },
     { name: "Time & Attendance", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "Time Off", href: "/dashboard/leave", icon: CalendarDays },
+    { name: "Analytics", href: "/dashboard/analytics", icon: TrendingUp },
+    { name: "Reports", href: "/dashboard/reports", icon: FileText },
     { name: "AI Copilot", href: "/dashboard/copilot", icon: Bot },
   ];
 
@@ -43,6 +47,7 @@ export function Sidebar({ role }: { role: string }) {
     { name: "My Time", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "My Time Off", href: "/dashboard/leave", icon: CalendarDays },
     { name: "My Pay", href: "/dashboard/payroll", icon: Banknote },
+    { name: "My Reports", href: "/dashboard/reports", icon: FileText },
     { name: "AI Copilot", href: "/dashboard/copilot", icon: Bot },
   ];
 

@@ -6,6 +6,14 @@ import { checkPermissions, Role } from "@/lib/copilot/permissions";
 import { buildContext } from "@/lib/copilot/context-builder";
 import { groq, MODEL_ID } from "@/lib/copilot/groq";
 import { prisma } from "@/lib/prisma";
+import { detectAndProposeAction } from "@/lib/copilot/actions";
+import { detectReportProposal } from "@/lib/copilot/reports";
+import { 
+  getWorkforceAnalytics, 
+  getAttendanceAnalytics, 
+  getLeaveAnalytics, 
+  getPayrollAnalytics 
+} from "@/lib/copilot/analytics";
 
 // Simple in-memory rate limiting (30 requests per hour)
 const rateLimitMap = new Map<string, { count: number, timestamp: number }>();
@@ -45,6 +53,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid prompt" }, { status: 400 });
     }
 
+    // PHASE B: Check for Action Proposal
+    const actionProposal = await detectAndProposeAction(prompt);
+    if (actionProposal) {
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'COPILOT_ACTION_PROPOSED',
+          metadata: JSON.stringify({ prompt, actionType: actionProposal.actionType })
+        }
+      });
+      return NextResponse.json({ actionProposal });
+    }
+
+    // PHASE B: Check for Report Generation Proposal
+    const reportProposal = detectReportProposal(prompt);
+    if (reportProposal) {
+      // Permission check for report
+      if (reportProposal.type === "PAYROLL" && role !== "ADMIN") {
+        return NextResponse.json({ 
+          response: "You do not have permission to generate payroll reports." 
+        }, { status: 403 });
+      }
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: 'COPILOT_REPORT_PROPOSED',
+          metadata: JSON.stringify({ prompt, reportType: reportProposal.type })
+        }
+      });
+      return NextResponse.json({ reportProposal });
+    }
+
     // 1. Intent Classification
     const intent = classifyIntent(prompt);
 
@@ -52,7 +92,6 @@ export async function POST(req: NextRequest) {
     const permission = checkPermissions(role, intent, prompt);
     
     if (!permission.allowed) {
-      // Log denied attempt
       await prisma.auditLog.create({
         data: {
           userId,
@@ -65,8 +104,22 @@ export async function POST(req: NextRequest) {
       }, { status: 403 });
     }
 
-    // 3. Build Safe Context
+    // 3. Build Safe Context & Analytics
     const safeContext = await buildContext(role, intent, userId);
+
+    // PHASE B: Inject summarized analytics if query asks for analytical insights
+    let analyticsData = null;
+    const lower = prompt.toLowerCase();
+    if (lower.match(/why|trend|most|average|analytics|rate|distribution|headcount|expenditure|cost|attrition|tenure/i)) {
+      if (role === "ADMIN" || role === "HR") {
+        analyticsData = {
+          workforce: await getWorkforceAnalytics(),
+          attendance: await getAttendanceAnalytics(),
+          leave: await getLeaveAnalytics(),
+          payroll: role === "ADMIN" ? await getPayrollAnalytics() : "Restricted"
+        };
+      }
+    }
 
     // 4. Construct System Prompt
     const systemPrompt = `You are Zindle Copilot, a secure AI assistant.
@@ -78,7 +131,8 @@ If the user requests unauthorized information not found in the context, politely
 Respond concisely and professionally.
 
 CONTEXT DATA:
-${JSON.stringify(safeContext.retrievedData, null, 2)}`;
+${JSON.stringify(safeContext.retrievedData, null, 2)}
+${analyticsData ? `\nANALYTICS SUMMARY:\n${JSON.stringify(analyticsData, null, 2)}` : ""}`;
 
     // 5. Call Groq
     const completion = await groq.chat.completions.create({
