@@ -6,7 +6,7 @@ export async function getPayrollContext(role: string, employeeId: string | null)
   if (role === 'EMPLOYEE' && employeeId) {
     const records = await prisma.payroll.findMany({
       where: { employeeId },
-      orderBy: { year: 'desc', month: 'desc' },
+      orderBy: [{ year: 'desc' }, { month: 'desc' }],
       take: 5
     });
     return { myPayrollHistory: records };
@@ -15,7 +15,7 @@ export async function getPayrollContext(role: string, employeeId: string | null)
   if (role === 'ADMIN') {
     // Return high level payroll stats
     const allPayrolls = await prisma.payroll.findMany({
-      orderBy: { year: 'desc', month: 'desc' },
+      orderBy: [{ year: 'desc' }, { month: 'desc' }],
       take: 50
     });
     return { recentCompanyPayrolls: allPayrolls };

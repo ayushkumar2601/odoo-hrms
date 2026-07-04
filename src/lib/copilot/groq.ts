@@ -4,4 +4,4 @@ export const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY || "", 
 });
 
-export const MODEL_ID = "llama3-8b-8192";
+export const MODEL_ID = "llama-3.3-70b-versatile";

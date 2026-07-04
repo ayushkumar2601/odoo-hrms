@@ -32,7 +32,7 @@ export async function generateReportData(
       // Employee can only generate their own payroll report
       const payrolls = await prisma.payroll.findMany({
         where: { employeeId: employeeId! },
-        orderBy: { year: 'desc', month: 'desc' }
+        orderBy: [{ year: 'desc' }, { month: 'desc' }]
       });
       return {
         title: `Personal Payroll Report - ${userName}`,
@@ -141,7 +141,7 @@ export async function generateReportData(
 
   if (type === "PAYROLL" && role === "ADMIN") {
     const payrolls = await prisma.payroll.findMany({
-      orderBy: { year: 'desc', month: 'desc' },
+      orderBy: [{ year: 'desc' }, { month: 'desc' }],
       take: 50,
       include: { employee: { select: { firstName: true, lastName: true, department: true } } }
     });
