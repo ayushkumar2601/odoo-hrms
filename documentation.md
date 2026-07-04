@@ -104,3 +104,22 @@ The organization operates on a strictly controlled onboarding pipeline. Users **
 3. **ID Generation**: The backend securely validates the request and automatically generates a sequential ID (e.g. `EMP0045`).
 4. **Account Linking**: The new employee is told their ID. They navigate to `/signup`, enter their `EMP0045` ID, and set their secure password. 
 5. **Validation**: The system verifies the ID exists in the database and links their new Login Credentials to that specific Employee Profile.
+
+---
+
+## 6. Zindle AI Copilot (Role-Aware Workforce Intelligence & Actions)
+The system features a flagship **Zindle AI Copilot**, powered by Groq's high-speed `llama-3.3-70b-versatile` LLM. The Copilot is deeply integrated into the HRMS with strict Role-Based Access Control (RBAC) and two interactive UI interfaces: a floating bottom-right chat widget (`/components/copilot/FloatingCopilot.tsx`) and a full-screen dashboard portal (`/dashboard/copilot`).
+
+### 🛡️ Phase A: Zero-Leakage RBAC & Context Building
+- **Strict Role Boundaries**: The Copilot evaluates the authenticated user's role before processing any question.
+  - **Employee**: Can only query their personal attendance timestamps, leave balance, profile data, and personal pay history.
+  - **HR**: Can view company-wide attendance and leave applications but is strictly blocked from executive payroll data.
+  - **Admin**: Has executive visibility across all departments and payroll summaries.
+- **Dynamic Context Builder**: Before passing prompt text to Groq, the backend (`/lib/copilot/context-builder.ts`) fetches exact database records from PostgreSQL via Prisma, ensuring zero hallucination.
+
+### 🚀 Phase B: Action Engine, Analytics & Branded PDF Reports
+- **Interactive Action Confirmation Engine**: When a user asks to perform an action (e.g., *"Apply for sick leave tomorrow"* or *"Change my phone number"*), the intent parser generates an **Action Proposal Card** with `Confirm Action` / `Cancel` buttons. Mutations only execute after explicit confirmation through `/api/copilot/action`.
+- **In-Chat PDF Report Generation**: Users can request downloadable reports (e.g., *"Generate an attendance report"*). The AI prepares the structured data and presents a **Generate & Download PDF** button directly inside the chat window using lightweight client-side `jspdf` and `jspdf-autotable`.
+- **Report Center Page (`/dashboard/reports`)**: A dedicated hub where users can filter, view, and re-download historical PDF reports.
+- **Role-Aware Workforce Analytics (`/dashboard/analytics`)**: Live computation engines providing real-time headcount distributions, attendance rates, leave approval bottlenecks, and restricted payroll summaries.
+- **Rich Markdown Formatting**: All AI responses are rendered using `react-markdown` and `remark-gfm`, formatting timestamps, bulleted lists, bold badges, tables, and headers for maximum readability.

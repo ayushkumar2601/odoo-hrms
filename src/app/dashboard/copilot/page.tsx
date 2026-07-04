@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Send, Bot, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface Message {
   role: "user" | "assistant";
@@ -45,8 +47,11 @@ export default function CopilotPage() {
       } else {
         setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
       }
-    } catch (error) {
-      setMessages((prev) => [...prev, { role: "assistant", content: "Network error. Please try again." }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: "An unexpected error occurred while communicating with the Copilot." },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +90,27 @@ export default function CopilotPage() {
                   ? "bg-blue-600 text-white rounded-tr-sm" 
                   : "bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm"
               }`}>
-                <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                {msg.role === "user" ? (
+                  <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                ) : (
+                  <div className="text-sm leading-relaxed space-y-2">
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                        strong: ({ children }) => <strong className="font-semibold text-slate-900 bg-blue-50/80 px-1.5 py-0.5 rounded border border-blue-200/60">{children}</strong>,
+                        ul: ({ children }) => <ul className="list-disc list-inside space-y-1.5 my-2 pl-2 text-slate-700">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal list-inside space-y-1.5 my-2 pl-2 text-slate-700">{children}</ol>,
+                        li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+                        h3: ({ children }) => <h3 className="font-bold text-base mt-4 mb-2 text-slate-900 border-b border-slate-200 pb-1.5 flex items-center gap-2">{children}</h3>,
+                        h4: ({ children }) => <h4 className="font-semibold text-sm mt-3 mb-1 text-slate-800">{children}</h4>,
+                        code: ({ children }) => <code className="bg-slate-100 text-blue-700 px-1.5 py-0.5 rounded text-xs font-mono border border-slate-200">{children}</code>,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
+                )}
               </div>
             </div>
           ))
