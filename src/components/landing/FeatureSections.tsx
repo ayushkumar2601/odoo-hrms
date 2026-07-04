@@ -445,22 +445,6 @@ export function FeatureSections() {
           </div>
         </div>
       </section>
-
-      {/* Footer Copyright */}
-      <footer className="bg-white border-t border-gray-200 py-10 text-center text-xs text-gray-500">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded bg-black text-white font-bold flex items-center justify-center text-[10px]">
-              Z
-            </div>
-            <span className="font-bold text-black">Zindle HRMS</span>
-            <span>— Powered by Zindle AI Copilot 2.0</span>
-          </div>
-          <div className="font-medium">
-            &copy; {new Date().getFullYear()} Zindle Inc. All rights reserved. Built with Next.js 16 & Groq LPU.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
