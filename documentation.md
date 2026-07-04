@@ -10,10 +10,11 @@ The Zyoris HRMS is currently deployed as a **Single-Tenant Enterprise Human Reso
 ## 2. Tech Stack
 * **Framework:** Next.js 14/15 (App Router, React Server Components)
 * **Language:** TypeScript
-* **Styling:** Tailwind CSS (Shadcn UI inspired, clean white/gray corporate aesthetics)
-* **Authentication:** Better Auth (Secure Email/Password, bcrypt hashing, cookie-based sessions)
+* **Styling:** Tailwind CSS (Premium Enterprise UI/UX Redesign - Deep Navy, Slate, Royal Blue palette with 'Inter' typography and Lucide icons)
+* **Authentication:** Better Auth (Secure Email/Password, bcrypt hashing, cookie-based sessions, forced password change on first login)
 * **Database:** PostgreSQL (Relational Database)
 * **ORM:** Prisma (Type-safe database querying and schema migrations)
+* **Email Service:** Nodemailer + SMTP (Automated welcome emails and notifications)
 
 ---
 
@@ -37,10 +38,13 @@ The repository relies on modern Next.js conventions, heavily separating the View
  │   │   ├── employees/ # Staff Directory UI
  │   │   ├── leave/     # Leave Requests UI
  │   │   ├── payroll/   # Salary Slips UI
- │   │   └── profile/   # Read-only personal details UI
+ │   │   ├── profile/   # Personal details & Edit UI
+ │   │   ├── settings/  # System config UI (Admin Only)
+ │   │   └── audit-logs/# Activity timeline UI (Admin Only)
  │   │
  │   ├── signin/        # Authentication Login Portal
  │   ├── signup/        # Employee Account Linking Portal
+ │   ├── change-password/# Forced security password change flow
  │   ├── globals.css    # Global Tailwind tokens & styles
  │   └── layout.tsx     # Global HTML shell
  │

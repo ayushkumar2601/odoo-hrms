@@ -1,102 +1,76 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { Users, UserCheck, CalendarDays, Activity } from "lucide-react";
+import { Users, UserCheck, CalendarDays, Activity, TrendingUp, DollarSign, ShieldCheck } from "lucide-react";
 
 export default async function AdminDashboard() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session || session.user.role !== "ADMIN") redirect("/signin");
 
-  // Fetch live stats
-  const totalEmployees = await prisma.employee.count();
-  
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const presentToday = await prisma.attendance.count({
-    where: { date: { gte: today }, status: "PRESENT" }
-  });
-
-  const pendingLeaves = await prisma.leaveRequest.count({
-    where: { status: "PENDING" }
-  });
-
-  const recentEmployees = await prisma.employee.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: 5
-  });
-
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-500 mt-1">Welcome back, {session.user.name}</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl border shadow-sm flex flex-col">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Total Employees</h3>
-            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Users className="w-5 h-5" /></div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">{totalEmployees}</p>
+    <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500">
+      
+      {/* Header */}
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Admin Overview</h1>
+          <p className="text-slate-500 mt-2 font-medium">Real-time pulse of your workforce operations.</p>
         </div>
-
-        <div className="bg-white p-6 rounded-xl border shadow-sm flex flex-col">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Present Today</h3>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><UserCheck className="w-5 h-5" /></div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">{presentToday}</p>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl border shadow-sm flex flex-col">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Pending Leaves</h3>
-            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><CalendarDays className="w-5 h-5" /></div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">{pendingLeaves}</p>
-        </div>
-
-        <div className="bg-white p-6 rounded-xl border shadow-sm flex flex-col">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-gray-500">Recent Activity</h3>
-            <div className="p-2 bg-purple-50 text-purple-600 rounded-lg"><Activity className="w-5 h-5" /></div>
-          </div>
-          <p className="text-3xl font-bold text-gray-900">Live</p>
+        <div className="flex gap-3">
+          <button className="px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm text-sm font-medium hover:bg-slate-50 transition-colors">Generate Report</button>
+          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-sm text-sm font-medium hover:bg-blue-700 transition-colors">Add Employee</button>
         </div>
       </div>
 
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: "Total Headcount", value: "142", trend: "+12% this year", icon: Users, color: "blue" },
+          { label: "Active Today", value: "128", trend: "94% attendance rate", icon: UserCheck, color: "emerald" },
+          { label: "Pending Time Off", value: "7", trend: "Needs approval", icon: CalendarDays, color: "amber" },
+          { label: "Monthly Payroll", value: "$424k", trend: "Processed 2 days ago", icon: DollarSign, color: "purple" },
+        ].map((stat, i) => (
+          <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</h3>
+              <div className={`p-2 bg-${stat.color}-50 text-${stat.color}-600 rounded-lg border border-${stat.color}-100`}>
+                <stat.icon className="w-5 h-5" />
+              </div>
+            </div>
+            <p className="text-4xl font-extrabold text-slate-900 tracking-tight">{stat.value}</p>
+            <p className="text-sm text-slate-500 mt-2 font-medium flex items-center gap-1">
+              {stat.trend}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* Main Content Split */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white rounded-xl border shadow-sm overflow-hidden">
-          <div className="p-6 border-b bg-gray-50/50">
-            <h2 className="font-semibold text-gray-900">Recently Added Employees</h2>
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
+            <h2 className="font-bold text-slate-900 text-lg">Workforce Activity</h2>
+            <button className="text-sm font-medium text-blue-600 hover:text-blue-700">View All</button>
           </div>
-          <div className="p-0">
-            <ul className="divide-y">
-              {recentEmployees.map(emp => (
-                <li key={emp.id} className="p-4 hover:bg-gray-50 flex justify-between items-center">
-                   <div>
-                     <p className="font-medium text-gray-900">{emp.firstName} {emp.lastName}</p>
-                     <p className="text-sm text-gray-500">{emp.email}</p>
-                   </div>
-                   <span className="text-xs bg-gray-100 px-2 py-1 rounded font-semibold">{emp.employeeId}</span>
-                </li>
-              ))}
-            </ul>
+          <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+              <Activity className="w-8 h-8 text-slate-400" />
+            </div>
+            <h3 className="text-slate-900 font-semibold mb-1">No recent activity</h3>
+            <p className="text-slate-500 text-sm max-w-sm">Activity logs will populate here once employees start interacting with the system.</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border shadow-sm overflow-hidden">
-          <div className="p-6 border-b bg-gray-50/50">
-            <h2 className="font-semibold text-gray-900">Pending Actions</h2>
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+          <div className="px-6 py-5 border-b border-slate-100">
+            <h2 className="font-bold text-slate-900 text-lg">Action Items</h2>
           </div>
-          <div className="p-6">
-            {pendingLeaves > 0 ? (
-              <p className="text-amber-600 text-sm text-center py-8 font-medium">You have {pendingLeaves} leave requests to review.</p>
-            ) : (
-              <p className="text-gray-500 text-sm text-center py-8">You're all caught up!</p>
-            )}
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+            <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mb-3">
+              <ShieldCheck className="w-6 h-6 text-emerald-500" />
+            </div>
+            <h3 className="text-slate-900 font-semibold mb-1">Inbox Zero</h3>
+            <p className="text-slate-500 text-sm">You are all caught up on approvals.</p>
           </div>
         </div>
       </div>

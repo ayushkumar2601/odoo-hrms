@@ -10,7 +10,8 @@ const protectedRoutes = {
     "/dashboard/leave", 
     "/dashboard/payroll", 
     "/dashboard/profile", 
-    "/dashboard/settings"
+    "/dashboard/settings",
+    "/dashboard/audit-logs"
   ],
   HR: [
     "/dashboard/hr", 
