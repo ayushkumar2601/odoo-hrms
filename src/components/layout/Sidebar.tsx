@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   Users, 
@@ -9,11 +11,24 @@ import {
   Banknote, 
   UserCircle, 
   Settings, 
-  LogOut 
+  LogOut,
+  Bell,
+  Activity
 } from "lucide-react";
 
 export function Sidebar({ role }: { role: string }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/");
+        }
+      }
+    });
+  };
 
   const adminLinks = [
     { name: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
@@ -22,6 +37,8 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Leave Management", href: "/dashboard/leave", icon: CalendarDays },
     { name: "Payroll", href: "/dashboard/payroll", icon: Banknote },
     { name: "Profile Management", href: "/dashboard/profile", icon: UserCircle },
+    { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+    { name: "Audit Logs", href: "/dashboard/audit-logs", icon: Activity },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
@@ -31,6 +48,7 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Attendance", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "Leave", href: "/dashboard/leave", icon: CalendarDays },
     { name: "Profiles", href: "/dashboard/profile", icon: UserCircle },
+    { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   ];
 
   const employeeLinks = [
@@ -39,6 +57,7 @@ export function Sidebar({ role }: { role: string }) {
     { name: "Attendance", href: "/dashboard/attendance", icon: CalendarClock },
     { name: "Leave", href: "/dashboard/leave", icon: CalendarDays },
     { name: "Payroll", href: "/dashboard/payroll", icon: Banknote },
+    { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
   ];
 
   const links = role === "ADMIN" ? adminLinks : role === "HR" ? hrLinks : employeeLinks;
@@ -73,10 +92,7 @@ export function Sidebar({ role }: { role: string }) {
 
       <div className="p-4 border-t">
         <button 
-          onClick={() => {
-            // Hardcode logout redirect for now since better-auth signout is client side
-            window.location.href = "/login"; 
-          }}
+          onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2.5 w-full rounded-md text-red-600 hover:bg-red-50 transition-colors text-sm font-medium"
         >
           <LogOut className="w-5 h-5" />

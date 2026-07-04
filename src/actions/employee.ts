@@ -3,6 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { generateEmployeeId } from "@/lib/id-generator";
 import { revalidatePath } from "next/cache";
 
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { sendWelcomeEmail } from "@/lib/email/send-email";
+import { logAudit } from "./audit";
+import { createNotification } from "./notification";
+
 export async function createEmployee(formData: FormData) {
   const firstName = formData.get("firstName") as string;
   const lastName = formData.get("lastName") as string;
@@ -13,7 +19,7 @@ export async function createEmployee(formData: FormData) {
 
   const empId = await generateEmployeeId();
 
-  await prisma.employee.create({
+  const newEmp = await prisma.employee.create({
     data: {
       employeeId: empId,
       firstName,
@@ -24,6 +30,15 @@ export async function createEmployee(formData: FormData) {
       isActive: true,
     }
   });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await logAudit(session.user.id, "EMPLOYEE_CREATED", `Created employee ${empId}`);
+    await createNotification(session.user.id, "Employee Created", `Successfully created employee ${firstName} ${lastName} (${empId})`);
+  }
+
+  // Send email (do not await to fail if it fails, or rather wait and log)
+  await sendWelcomeEmail(`${firstName} ${lastName}`, empId, role, email);
 
   revalidatePath("/dashboard/employees");
 }

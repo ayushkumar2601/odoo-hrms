@@ -41,19 +41,33 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Unauthenticated user trying to access /dashboard
+  // Define protected route prefixes
+  const isProtectedRoute = pathname.startsWith("/dashboard") || 
+                           pathname.startsWith("/attendance") || 
+                           pathname.startsWith("/leave") || 
+                           pathname.startsWith("/payroll") || 
+                           pathname.startsWith("/profile");
+
+  // Unauthenticated user trying to access a protected route
   if (!data || !data.session) {
-    if (pathname.startsWith("/dashboard")) {
+    if (isProtectedRoute) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
     return NextResponse.next();
   }
 
   const user = data.user;
+  console.log("Middleware user object:", user);
+
+  // Force password change check
+  if (user.mustChangePassword && pathname !== "/change-password" && !pathname.startsWith("/api/auth")) {
+    return NextResponse.redirect(new URL("/change-password", request.url));
+  }
+
   const role = user.role as "ADMIN" | "HR" | "EMPLOYEE";
 
-  // Redirect authenticated users away from public auth pages
-  if (pathname === "/" || pathname === "/signin" || pathname === "/signup") {
+  // Redirect authenticated users away from public auth pages or the base dashboard route
+  if (pathname === "/" || pathname === "/signin" || pathname === "/signup" || pathname === "/dashboard") {
     const defaultRoute = role === "ADMIN" ? "/dashboard/admin" : role === "HR" ? "/dashboard/hr" : "/dashboard/employee";
     return NextResponse.redirect(new URL(defaultRoute, request.url));
   }

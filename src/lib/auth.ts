@@ -30,6 +30,11 @@ export const auth = betterAuth({
             companyId: {
                 type: "string",
                 required: false
+            },
+            mustChangePassword: {
+                type: "boolean",
+                required: false,
+                defaultValue: false
             }
         }
     }

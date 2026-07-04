@@ -34,11 +34,26 @@ export async function checkOut(employeeId: string) {
     orderBy: { createdAt: 'desc' }
   });
 
-  if (!existing || existing.checkOut) throw new Error("Cannot check out.");
+  if (!existing || !existing.checkIn || existing.checkOut) throw new Error("Cannot check out.");
+
+  const checkOutTime = new Date();
+  const diffMs = checkOutTime.getTime() - existing.checkIn.getTime();
+  const workedMinutes = Math.floor(diffMs / 60000);
+
+  let status = "ABSENT";
+  if (workedMinutes >= 480) {
+    status = "PRESENT";
+  } else if (workedMinutes >= 240) {
+    status = "HALF_DAY";
+  }
 
   await prisma.attendance.update({
     where: { id: existing.id },
-    data: { checkOut: new Date() }
+    data: { 
+      checkOut: checkOutTime,
+      workedMinutes,
+      status
+    }
   });
 
   revalidatePath("/dashboard/attendance");
