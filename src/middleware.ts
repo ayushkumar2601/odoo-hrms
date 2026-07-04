@@ -3,9 +3,29 @@ import { betterFetch } from "@better-fetch/fetch";
 import type { Session } from "better-auth/types";
 
 const protectedRoutes = {
-  ADMIN: ["/dashboard/admin", "/employees", "/departments"],
-  HR: ["/dashboard/admin", "/employees"],
-  EMPLOYEE: ["/dashboard/employee", "/profile"],
+  ADMIN: [
+    "/dashboard/admin", 
+    "/dashboard/employees", 
+    "/dashboard/attendance", 
+    "/dashboard/leave", 
+    "/dashboard/payroll", 
+    "/dashboard/profile", 
+    "/dashboard/settings"
+  ],
+  HR: [
+    "/dashboard/hr", 
+    "/dashboard/employees", 
+    "/dashboard/attendance", 
+    "/dashboard/leave", 
+    "/dashboard/profile"
+  ],
+  EMPLOYEE: [
+    "/dashboard/employee", 
+    "/dashboard/profile", 
+    "/dashboard/attendance", 
+    "/dashboard/leave", 
+    "/dashboard/payroll"
+  ],
 };
 
 export async function middleware(request: NextRequest) {
@@ -21,37 +41,36 @@ export async function middleware(request: NextRequest) {
     }
   );
 
+  // Unauthenticated user trying to access /dashboard
   if (!data || !data.session) {
-    if (pathname.startsWith("/dashboard") || pathname.startsWith("/employees") || pathname.startsWith("/profile")) {
-      return NextResponse.redirect(new URL("/login", request.url));
+    if (pathname.startsWith("/dashboard")) {
+      return NextResponse.redirect(new URL("/signin", request.url));
     }
     return NextResponse.next();
   }
 
-  // Check mustChangePassword
   const user = data.user;
-  if (user?.mustChangePassword && pathname !== "/change-password" && !pathname.startsWith("/api/auth")) {
-    return NextResponse.redirect(new URL("/change-password", request.url));
-  }
+  const role = user.role as "ADMIN" | "HR" | "EMPLOYEE";
 
-  if (pathname === "/login" || pathname === "/organization-register") {
-    const defaultRoute = user.role === "EMPLOYEE" ? "/dashboard/employee" : "/dashboard/admin";
+  // Redirect authenticated users away from public auth pages
+  if (pathname === "/" || pathname === "/signin" || pathname === "/signup") {
+    const defaultRoute = role === "ADMIN" ? "/dashboard/admin" : role === "HR" ? "/dashboard/hr" : "/dashboard/employee";
     return NextResponse.redirect(new URL(defaultRoute, request.url));
   }
 
-  // RBAC
-  const role = user.role as "ADMIN" | "HR" | "EMPLOYEE";
-  const allowedRoutes = protectedRoutes[role] || [];
-  
-  const isAllowed = allowedRoutes.some(route => pathname.startsWith(route));
-  
-  if (!isAllowed && (pathname.startsWith("/dashboard") || pathname.startsWith("/employees") || pathname.startsWith("/profile"))) {
-     return NextResponse.redirect(new URL("/unauthorized", request.url));
+  // RBAC checks for dashboard routes
+  if (pathname.startsWith("/dashboard")) {
+    const allowedRoutes = protectedRoutes[role] || [];
+    const isAllowed = allowedRoutes.some(route => pathname.startsWith(route));
+    
+    if (!isAllowed) {
+       return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api/auth|_next/static|_next/image|favicon.ico).*)"],
 };

@@ -7,71 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  HR
-  EMPLOYEE
-}
-
-enum AttendanceStatus {
-  PRESENT
-  HALF_DAY
-  ABSENT
-  LEAVE
-}
-
-enum LeaveType {
-  PAID
-  SICK
-  CASUAL
-  UNPAID
-}
-
-enum LeaveStatus {
-  PENDING
-  APPROVED
-  REJECTED
-  CANCELLED
-}
-
-model Company {
-  id        String   @id @default(cuid())
-  code      String   @unique
-  name      String
-  logoUrl   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  users       User[]
-  employees   Employee[]
-  departments Department[]
-}
-
 model User {
-  id                 String    @id @default(cuid())
+  id                 String    @id
   name               String
-  email              String
+  email              String    @unique
   emailVerified      Boolean
   image              String?
   createdAt          DateTime
   updatedAt          DateTime
-
-  employeeId         String?   @unique
-  mustChangePassword Boolean   @default(true)
-
-  role               Role      @default(EMPLOYEE)
-  companyId          String?
-  company            Company?  @relation(fields: [companyId], references: [id])
+  role               String?
   employee           Employee?
-
-  sessions           Session[]
   accounts           Account[]
-
-  @@unique([email])
+  sessions           Session[]
 }
 
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id
   expiresAt DateTime
   token     String
   createdAt DateTime
@@ -85,7 +36,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id @default(cuid())
+  id                    String    @id
   accountId             String
   providerId            String
   userId                String
@@ -102,214 +53,76 @@ model Account {
 }
 
 model Verification {
-  id         String    @id @default(cuid())
+  id         String    @id
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime
-  updatedAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 }
 
 model Employee {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  companyId    String
-  company      Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  departmentId String?
-  department   Department? @relation(fields: [departmentId], references: [id])
-  
-  firstName    String
-  lastName     String
-  phone        String?
-  address      String?
-  profileImage String?
-  joiningDate  DateTime
-  designation  String?
-  
-  attendances       Attendance[]
-  leaveRequests     LeaveRequest[]
-  leaveBalance      LeaveBalance?
-  salaryStructure   SalaryStructure?
-  payrollRecords    PayrollRecord[]
-  employeeDocuments EmployeeDocument[]
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String         @id @default(uuid())
+  employeeId      String         @unique // EMP0001
+  userId          String?        @unique
+  user            User?          @relation(fields: [userId], references: [id])
+  firstName       String
+  lastName        String
+  email           String         @unique
+  phone           String?
+  department      String?
+  designation     String?
+  joiningDate     DateTime
+  role            String         @default("EMPLOYEE") // ADMIN, HR, EMPLOYEE
+  address         String?
+  baseSalary      Float?
+  isActive        Boolean        @default(true)
+  profilePicture  String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  leaveRequests   LeaveRequest[]
+  attendances     Attendance[]
+  payrolls        Payroll[]
 }
 
-model Department {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  
-  employees   Employee[]
+model Attendance {
+  id         String   @id @default(uuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  date       DateTime
+  checkIn    DateTime?
+  checkOut   DateTime?
+  status     String   // PRESENT, ABSENT, HALF_DAY, LEAVE
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 
+model LeaveRequest {
+  id          String   @id @default(uuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  leaveType   String   // PAID, SICK, UNPAID
+  startDate   DateTime
+  endDate     DateTime
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  remarks     String?
+  adminComment String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
-model AuditLog {
-  id        String   @id @default(cuid())
-  action    String
-  userId    String?
-  metadata  String?
-  createdAt DateTime @default(now())
-}
-
-model Attendance {
-  id             String   @id @default(cuid())
-  employeeId     String
-  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  date           DateTime
-
-  checkIn        DateTime?
-  checkOut       DateTime?
-
-  workedMinutes  Int?
-
-  status         AttendanceStatus
-
-  notes          String?
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([employeeId])
-  @@index([date])
-}
-
-model LeaveRequest {
-  id             String   @id @default(cuid())
-  employeeId     String
-  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  leaveType      LeaveType
-
-  startDate      DateTime
-  endDate        DateTime
-
-  reason         String
-
-  status         LeaveStatus
-
-  adminComment   String?
-
-  reviewedById   String?
-  reviewedAt     DateTime?
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([employeeId])
-  @@index([status])
-}
-
-model LeaveBalance {
-  id             String   @id @default(cuid())
-  employeeId     String   @unique
-  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  paidLeaves     Int      @default(12)
-  sickLeaves     Int      @default(12)
-  casualLeaves   Int      @default(6)
-  unpaidLeaves   Int      @default(9999)
-
-  updatedAt      DateTime @updatedAt
-}
-
-model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  title     String
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-}
-
-model SalaryStructure {
-  id             String   @id @default(cuid())
-  employeeId     String   @unique
-  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  basicSalary    Decimal
-  hra            Decimal
-  allowances     Decimal
-  bonus          Decimal
-  deductions     Decimal
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-}
-
-model PayrollRecord {
-  id              String   @id @default(cuid())
-  employeeId      String
-  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  month           Int
-  year            Int
-
-  grossSalary     Decimal
-  totalDeductions Decimal
-  netSalary       Decimal
-
-  generatedAt     DateTime @default(now())
-  createdAt       DateTime @default(now())
-
-  @@index([employeeId])
-  @@index([month, year])
-}
-
-model EmployeeDocument {
-  id           String   @id @default(cuid())
-  employeeId   String
-  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-
-  documentType String
-  fileName     String
-  fileUrl      String
-
-  uploadedBy   String
-  uploadedAt   DateTime @default(now())
-
-  @@index([employeeId])
-}
-
-model OrganizationSettings {
-  id            String   @id @default(cuid())
-  companyId     String   @unique
-  companyName   String
-  companyLogoUrl String?
-  companyCode   String
-
-  updatedAt     DateTime @updatedAt
-}
-
-model LeavePolicy {
-  id            String   @id @default(cuid())
-  companyId     String   @unique
-
-  paidLeaves    Int      @default(12)
-  sickLeaves    Int      @default(12)
-  casualLeaves  Int      @default(6)
-  unpaidLeaves  Int      @default(9999)
-
-  updatedAt     DateTime @updatedAt
-}
-
-model AttendancePolicy {
-  id                  String   @id @default(cuid())
-  companyId           String   @unique
-
-  officeStartTime     String   @default("09:00")
-  officeEndTime       String   @default("17:00")
-  gracePeriodMinutes  Int      @default(15)
-  halfDayThresholdHrs Decimal  @default(4.0)
-  fullDayThresholdHrs Decimal  @default(8.0)
-
-  updatedAt           DateTime @updatedAt
+model Payroll {
+  id          String   @id @default(uuid())
+  employeeId  String
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  month       Int
+  year        Int
+  basicSalary Float
+  allowances  Float
+  deductions  Float
+  netSalary   Float
+  status      String   @default("GENERATED")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
