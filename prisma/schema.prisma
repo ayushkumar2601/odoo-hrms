@@ -4,12 +4,34 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
   ADMIN
   HR
   EMPLOYEE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  HALF_DAY
+  ABSENT
+  LEAVE
+}
+
+enum LeaveType {
+  PAID
+  SICK
+  CASUAL
+  UNPAID
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
 }
 
 model Company {
@@ -26,21 +48,24 @@ model Company {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
+  id                 String    @id @default(cuid())
+  name               String
+  email              String
+  emailVerified      Boolean
+  image              String?
+  createdAt          DateTime
+  updatedAt          DateTime
 
-  role          Role      @default(EMPLOYEE)
-  companyId     String?
-  company       Company?  @relation(fields: [companyId], references: [id])
-  employee      Employee?
+  employeeId         String?   @unique
+  mustChangePassword Boolean   @default(true)
 
-  sessions      Session[]
-  accounts      Account[]
+  role               Role      @default(EMPLOYEE)
+  companyId          String?
+  company            Company?  @relation(fields: [companyId], references: [id])
+  employee           Employee?
+
+  sessions           Session[]
+  accounts           Account[]
 
   @@unique([email])
 }
@@ -87,7 +112,6 @@ model Verification {
 
 model Employee {
   id           String   @id @default(cuid())
-  employeeId   String   @unique
   userId       String   @unique
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   companyId    String
@@ -97,11 +121,16 @@ model Employee {
   
   firstName    String
   lastName     String
-  dateOfJoin   DateTime
-  designation  String
+  phone        String?
+  address      String?
+  profileImage String?
+  joiningDate  DateTime
+  designation  String?
   
-  forcePasswordChange Boolean @default(true)
-
+  attendances  Attendance[]
+  leaveRequests LeaveRequest[]
+  leaveBalance  LeaveBalance?
+  
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -123,6 +152,71 @@ model AuditLog {
   id        String   @id @default(cuid())
   action    String
   userId    String?
-  details   String?
+  metadata  String?
+  createdAt DateTime @default(now())
+}
+
+model Attendance {
+  id             String   @id @default(cuid())
+  employeeId     String
+  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  date           DateTime
+
+  checkIn        DateTime?
+  checkOut       DateTime?
+
+  workedMinutes  Int?
+
+  status         AttendanceStatus
+
+  notes          String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model LeaveRequest {
+  id             String   @id @default(cuid())
+  employeeId     String
+  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  leaveType      LeaveType
+
+  startDate      DateTime
+  endDate        DateTime
+
+  reason         String
+
+  status         LeaveStatus
+
+  adminComment   String?
+
+  reviewedById   String?
+  reviewedAt     DateTime?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model LeaveBalance {
+  id             String   @id @default(cuid())
+  employeeId     String   @unique
+  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  paidLeaves     Int      @default(12)
+  sickLeaves     Int      @default(12)
+  casualLeaves   Int      @default(6)
+  unpaidLeaves   Int      @default(9999)
+
+  updatedAt      DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
