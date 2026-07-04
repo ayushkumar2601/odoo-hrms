@@ -127,9 +127,12 @@ model Employee {
   joiningDate  DateTime
   designation  String?
   
-  attendances  Attendance[]
-  leaveRequests LeaveRequest[]
-  leaveBalance  LeaveBalance?
+  attendances       Attendance[]
+  leaveRequests     LeaveRequest[]
+  leaveBalance      LeaveBalance?
+  salaryStructure   SalaryStructure?
+  payrollRecords    PayrollRecord[]
+  employeeDocuments EmployeeDocument[]
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -174,6 +177,9 @@ model Attendance {
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([date])
 }
 
 model LeaveRequest {
@@ -197,6 +203,9 @@ model LeaveRequest {
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([employeeId])
+  @@index([status])
 }
 
 model LeaveBalance {
@@ -219,4 +228,88 @@ model Notification {
   message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model SalaryStructure {
+  id             String   @id @default(cuid())
+  employeeId     String   @unique
+  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  basicSalary    Decimal
+  hra            Decimal
+  allowances     Decimal
+  bonus          Decimal
+  deductions     Decimal
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model PayrollRecord {
+  id              String   @id @default(cuid())
+  employeeId      String
+  employee        Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  month           Int
+  year            Int
+
+  grossSalary     Decimal
+  totalDeductions Decimal
+  netSalary       Decimal
+
+  generatedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([employeeId])
+  @@index([month, year])
+}
+
+model EmployeeDocument {
+  id           String   @id @default(cuid())
+  employeeId   String
+  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  documentType String
+  fileName     String
+  fileUrl      String
+
+  uploadedBy   String
+  uploadedAt   DateTime @default(now())
+
+  @@index([employeeId])
+}
+
+model OrganizationSettings {
+  id            String   @id @default(cuid())
+  companyId     String   @unique
+  companyName   String
+  companyLogoUrl String?
+  companyCode   String
+
+  updatedAt     DateTime @updatedAt
+}
+
+model LeavePolicy {
+  id            String   @id @default(cuid())
+  companyId     String   @unique
+
+  paidLeaves    Int      @default(12)
+  sickLeaves    Int      @default(12)
+  casualLeaves  Int      @default(6)
+  unpaidLeaves  Int      @default(9999)
+
+  updatedAt     DateTime @updatedAt
+}
+
+model AttendancePolicy {
+  id                  String   @id @default(cuid())
+  companyId           String   @unique
+
+  officeStartTime     String   @default("09:00")
+  officeEndTime       String   @default("17:00")
+  gracePeriodMinutes  Int      @default(15)
+  halfDayThresholdHrs Decimal  @default(4.0)
+  fullDayThresholdHrs Decimal  @default(8.0)
+
+  updatedAt           DateTime @updatedAt
 }
