@@ -10,21 +10,21 @@ async function main() {
 
     const users = [
         {
-            email: "hr@zyoris.com",
+            email: "hr@zindle.com",
             firstName: "Jane",
             lastName: "Manager",
             role: "HR",
             employeeId: "EMP0001"
         },
         {
-            email: "employee1@zyoris.com",
+            email: "employee1@zindle.com",
             firstName: "John",
             lastName: "Doe",
             role: "EMPLOYEE",
             employeeId: "EMP0002"
         },
         {
-            email: "employee2@zyoris.com",
+            email: "employee2@zindle.com",
             firstName: "Alice",
             lastName: "Smith",
             role: "EMPLOYEE",

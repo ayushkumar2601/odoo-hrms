@@ -73,14 +73,14 @@ export async function registerEmployeeAccount(employeeId: string, email: string,
       await tx.notification.create({
         data: {
           userId: newUser.id,
-          title: "Welcome to Zyoris",
+          title: "Welcome to Zindle",
           message: `Your account has been successfully linked to your employee profile (${employeeId}).`
         }
       });
     });
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Signup error:", error);
     return { error: "An unexpected error occurred during signup." };
   }

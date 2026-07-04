@@ -1,6 +1,6 @@
-# Zyoris HRMS
+# Zindle HRMS
 
-Welcome to the Zyoris Human Resource Management System (HRMS).
+Welcome to the Zindle Human Resource Management System (HRMS).
 
 This project is a clean, modern, and highly secure **Single-Tenant Enterprise HRMS** built on Next.js 14, PostgreSQL, and Prisma. It is designed to handle core organizational features such as secure onboarding, daily attendance tracking, leave request workflows, and payroll generation, all protected by a robust Role-Based Access Control (RBAC) architecture.
 

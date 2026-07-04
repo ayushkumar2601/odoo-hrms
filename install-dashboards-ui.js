@@ -50,7 +50,7 @@ export function Sidebar({ role }: { role: string }) {
   return (
     <aside className="w-64 bg-white border-r min-h-screen flex flex-col shadow-sm text-black">
       <div className="p-6 border-b">
-        <h2 className="text-2xl font-bold tracking-tight text-blue-600">Zyoris</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-blue-600">Zindle</h2>
         <p className="text-xs text-gray-500 font-medium mt-1 uppercase tracking-wider">{role} PORTAL</p>
       </div>
       

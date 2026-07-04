@@ -24,7 +24,7 @@ export default function SignInPage() {
       setError(signInError.message || "Invalid credentials.");
       setLoading(false);
     } else {
-      router.push("/dashboard/admin"); // Temporary redirect, middleware handles exact routing
+      router.push("/dashboard"); // Middleware handles exact routing based on role
       router.refresh();
     }
   };

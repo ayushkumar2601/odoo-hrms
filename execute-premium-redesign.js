@@ -173,7 +173,7 @@ export function Sidebar({ role }: { role: string }) {
         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-inner">
           <ShieldCheck className="text-white w-5 h-5" />
         </div>
-        <h2 className="text-xl font-bold tracking-tight text-white">Zyoris</h2>
+        <h2 className="text-xl font-bold tracking-tight text-white">Zindle</h2>
       </div>
       
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">

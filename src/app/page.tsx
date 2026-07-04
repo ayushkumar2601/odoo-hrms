@@ -11,7 +11,7 @@ export default function LandingPage() {
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <ShieldCheck className="text-white w-5 h-5" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">Zyoris HRMS</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900">Zindle HRMS</span>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/signin" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
@@ -30,7 +30,7 @@ export default function LandingPage() {
         </div>
         
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6 max-w-4xl">
-          Zyoris HRMS <br className="hidden md:block" />
+          Zindle HRMS <br className="hidden md:block" />
           <span className="text-blue-600">Every workday, perfectly aligned.</span>
         </h1>
         
@@ -83,7 +83,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="w-full py-8 text-center border-t border-slate-200 bg-white">
         <p className="text-sm text-slate-500">
-          &copy; {new Date().getFullYear()} Zyoris. All rights reserved. Secure Enterprise Portal.
+          &copy; {new Date().getFullYear()} Zindle. All rights reserved. Secure Enterprise Portal.
         </p>
       </footer>
     </div>

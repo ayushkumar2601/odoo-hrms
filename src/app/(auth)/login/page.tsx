@@ -28,13 +28,13 @@ export default function LoginPage() {
          return;
       }
       
-      const role = (data?.user as any)?.role || "EMPLOYEE";
+      const role = (data?.user as unknown as { role?: string })?.role || "EMPLOYEE";
       if (role === "EMPLOYEE") {
         router.push("/dashboard/employee");
       } else {
         router.push("/dashboard/admin");
       }
-    } catch (err) {
+    } catch (err: unknown) {
       setError("An error occurred");
       setLoading(false);
     }

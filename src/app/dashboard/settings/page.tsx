@@ -11,7 +11,7 @@ export default async function SettingsPage() {
     <div className="max-w-5xl mx-auto animate-in fade-in duration-500">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Settings</h1>
-        <p className="text-slate-500 mt-2 font-medium">Manage your organization's configurations and preferences.</p>
+        <p className="text-slate-500 mt-2 font-medium">Manage your organization&apos;s configurations and preferences.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -39,11 +39,11 @@ export default async function SettingsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Company Name</label>
-                  <input type="text" defaultValue="Zyoris Technologies" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                  <input type="text" defaultValue="Zindle Technologies" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Support Email</label>
-                  <input type="email" defaultValue="support@zyoris.com" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                  <input type="email" defaultValue="support@zindle.com" className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
                 </div>
               </div>
               

@@ -3,7 +3,7 @@ export function getWelcomeEmailTemplate(name: string, employeeId: string, role: 
   
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #2563eb;">Welcome to Zyoris HRMS</h2>
+      <h2 style="color: #2563eb;">Welcome to Zindle HRMS</h2>
       <p>Hello ${name},</p>
       <p>Your employee profile has been created in the system.</p>
       
@@ -20,7 +20,7 @@ export function getWelcomeEmailTemplate(name: string, employeeId: string, role: 
       </a>
       
       <p style="margin-top: 30px; color: #6b7280; font-size: 14px;">
-        Thank you,<br/>Zyoris HRMS Administration
+        Thank you,<br/>Zindle HRMS Administration
       </p>
     </div>
   `;

@@ -1,7 +1,7 @@
-# Zyoris HRMS - Technical Documentation
+# Zindle HRMS - Technical Documentation
 
 ## 1. Overview and Current State
-The Zyoris HRMS is currently deployed as a **Single-Tenant Enterprise Human Resource Management System**. We have fully executed the massive architectural pivot away from a multi-tenant SaaS model, establishing a secure, rigidly structured, and robust environment for a single organization to manage its personnel.
+The Zindle HRMS is currently deployed as a **Single-Tenant Enterprise Human Resource Management System**. We have fully executed the massive architectural pivot away from a multi-tenant SaaS model, establishing a secure, rigidly structured, and robust environment for a single organization to manage its personnel.
 
 **Current State**: The system is fully operational locally. Core functionalities such as Authentication (Better Auth), strict Role-Based Access Control (Next.js Middleware), Employee Management, Attendance Tracking, Leave Approvals, and Payroll Generation are completely wired to the PostgreSQL database via high-performance Next.js Server Actions.
 

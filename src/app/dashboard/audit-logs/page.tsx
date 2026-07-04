@@ -9,8 +9,8 @@ export default async function AuditLogsPage() {
 
   const mockLogs = [
     { id: 1, action: "User Login", user: "Ayush Kumar", email: "whokilledayush@gmail.com", time: "2 minutes ago", icon: Activity, color: "blue" },
-    { id: 2, action: "Created Employee", user: "System Admin", email: "admin@zyoris.com", time: "1 hour ago", icon: UserPlus, color: "emerald" },
-    { id: 3, action: "Modified Policy", user: "System Admin", email: "admin@zyoris.com", time: "5 hours ago", icon: FileEdit, color: "amber" },
+    { id: 2, action: "Created Employee", user: "System Admin", email: "admin@zindle.com", time: "1 hour ago", icon: UserPlus, color: "emerald" },
+    { id: 3, action: "Modified Policy", user: "System Admin", email: "admin@zindle.com", time: "5 hours ago", icon: FileEdit, color: "amber" },
     { id: 4, action: "Failed Login Attempt", user: "Unknown IP", email: "-", time: "1 day ago", icon: ShieldAlert, color: "red" },
   ];
 

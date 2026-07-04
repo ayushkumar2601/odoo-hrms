@@ -11,9 +11,9 @@ export async function sendWelcomeEmail(name: string, employeeId: string, role: s
     const html = getWelcomeEmailTemplate(name, employeeId, role, email);
     
     const info = await transporter.sendMail({
-      from: `"Zyoris HRMS" <${EMAIL_FROM}>`,
+      from: `"Zindle HRMS" <${EMAIL_FROM}>`,
       to: email,
-      subject: "Welcome to Zyoris HRMS",
+      subject: "Welcome to Zindle HRMS",
       html: html,
     });
 

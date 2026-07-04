@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 const prisma = new PrismaClient();
 
 async function main() {
-    const adminEmail = "admin@zyoris.com";
+    const adminEmail = "admin@zindle.com";
     const adminPassword = "Admin@123";
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
