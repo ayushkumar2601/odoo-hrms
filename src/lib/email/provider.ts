@@ -1,13 +1,18 @@
 import nodemailer from 'nodemailer';
 
-export const EMAIL_FROM = process.env.EMAIL_FROM || "kumarayush.professional@gmail.com";
+export function getEmailFrom() {
+  return process.env.EMAIL_FROM || "kumarayush.professional@gmail.com";
+}
 
-const password = process.env.EMAIL_PASS;
+export function getTransporter() {
+  const fromEmail = getEmailFrom();
+  const password = process.env.EMAIL_PASS || "irnizgvvgzrwijaq";
 
-export const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: EMAIL_FROM,
-    pass: password,
-  },
-});
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: fromEmail,
+      pass: password,
+    },
+  });
+}
