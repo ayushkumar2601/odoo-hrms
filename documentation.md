@@ -10,7 +10,7 @@ The Zindle HRMS is currently deployed as a **Single-Tenant Enterprise Human Reso
 ## 2. Tech Stack
 * **Framework:** Next.js 14/15 (App Router, React Server Components)
 * **Language:** TypeScript
-* **Styling:** Tailwind CSS (Premium Enterprise UI/UX Redesign - Deep Navy, Slate, Royal Blue palette with 'Inter' typography and Lucide icons)
+* **Styling:** Tailwind CSS (Award-Winning Apple & Linear CRM Minimalist UI System — Deep charcoal `#111827` primary accents, soft `#FAFAFB` content shells, premium metric boxes with subtle borders `#E5E7EB`, monotonic hierarchy, and Lucide telemetry icons)
 * **Authentication:** Better Auth (Secure Email/Password, bcrypt hashing, cookie-based sessions, forced password change on first login)
 * **Database:** PostgreSQL (Relational Database)
 * **ORM:** Prisma (Type-safe database querying and schema migrations)

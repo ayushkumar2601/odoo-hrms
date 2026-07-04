@@ -58,37 +58,43 @@ export default function CopilotPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-8rem)] flex flex-col bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+    <div className="max-w-5xl mx-auto h-[calc(100vh-8rem)] flex flex-col bg-white rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.06)] border border-slate-200/80 overflow-hidden">
       
       {/* Header */}
-      <div className="bg-slate-900 text-white p-6 flex items-center gap-4">
-        <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-inner">
-          <Bot className="w-7 h-7 text-white" />
+      <div className="bg-[#111827] text-white p-6 px-8 flex items-center justify-between border-b border-slate-800">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center border border-white/10 shadow-sm">
+            <Bot className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold tracking-tight">Zindle AI Copilot 2.0 (Executive Edition)</h2>
+            <p className="text-xs text-slate-400 mt-0.5">Natural Language Workforce Telemetry & Automated Mutations</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-bold">Zindle Copilot</h2>
-          <p className="text-slate-400 text-sm mt-1">Your role-aware secure AI assistant</p>
-        </div>
+        <span className="text-[11px] font-semibold bg-white/10 text-slate-200 px-3 py-1 rounded-full border border-white/10">
+          Role-Aware RBAC Active
+        </span>
       </div>
 
       {/* Chat History */}
-      <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50">
+      <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-[#FAFAFB]">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center text-slate-400 max-w-md mx-auto">
-            <Bot className="w-16 h-16 mb-4 text-slate-300" />
-            <h3 className="text-lg font-semibold text-slate-700 mb-2">How can I assist you?</h3>
-            <p className="text-sm">
-              I can answer questions about your attendance, leaves, payroll, and more. 
-              My answers are securely tailored to your permissions.
+            <div className="w-16 h-16 rounded-3xl bg-white border border-slate-200/80 flex items-center justify-center mb-5 shadow-2xs">
+              <Bot className="w-8 h-8 text-[#111827]" />
+            </div>
+            <h3 className="text-base font-bold text-[#111827] mb-1.5">How can Zindle Copilot assist you?</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Query employee attendance, inspect leave applications, check salary slips, or generate executive PDF telemetry reports. All outputs strictly adhere to your authenticated RBAC permissions.
             </p>
           </div>
         ) : (
           messages.map((msg, idx) => (
             <div key={idx} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[80%] rounded-3xl px-6 py-4 ${
+              <div className={`max-w-[80%] rounded-3xl px-6 py-4.5 ${
                 msg.role === "user" 
-                  ? "bg-blue-600 text-white rounded-tr-sm" 
-                  : "bg-white border border-slate-200 text-slate-800 rounded-tl-sm shadow-sm"
+                  ? "bg-[#111827] text-white rounded-tr-xs shadow-sm font-medium text-sm" 
+                  : "bg-white border border-slate-200/80 text-[#111827] rounded-tl-xs shadow-[0_2px_12px_rgba(0,0,0,0.03)] text-sm"
               }`}>
                 {msg.role === "user" ? (
                   <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
@@ -98,13 +104,13 @@ export default function CopilotPage() {
                       remarkPlugins={[remarkGfm]}
                       components={{
                         p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                        strong: ({ children }) => <strong className="font-semibold text-slate-900 bg-blue-50/80 px-1.5 py-0.5 rounded border border-blue-200/60">{children}</strong>,
-                        ul: ({ children }) => <ul className="list-disc list-inside space-y-1.5 my-2 pl-2 text-slate-700">{children}</ul>,
-                        ol: ({ children }) => <ol className="list-decimal list-inside space-y-1.5 my-2 pl-2 text-slate-700">{children}</ol>,
+                        strong: ({ children }) => <strong className="font-bold text-[#111827] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200/80">{children}</strong>,
+                        ul: ({ children }) => <ul className="list-disc list-inside space-y-1.5 my-2 pl-2 text-slate-600">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal list-inside space-y-1.5 my-2 pl-2 text-slate-600">{children}</ol>,
                         li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                        h3: ({ children }) => <h3 className="font-bold text-base mt-4 mb-2 text-slate-900 border-b border-slate-200 pb-1.5 flex items-center gap-2">{children}</h3>,
-                        h4: ({ children }) => <h4 className="font-semibold text-sm mt-3 mb-1 text-slate-800">{children}</h4>,
-                        code: ({ children }) => <code className="bg-slate-100 text-blue-700 px-1.5 py-0.5 rounded text-xs font-mono border border-slate-200">{children}</code>,
+                        h3: ({ children }) => <h3 className="font-bold text-sm mt-4 mb-2 text-[#111827] border-b border-slate-200/80 pb-1.5 flex items-center gap-2">{children}</h3>,
+                        h4: ({ children }) => <h4 className="font-semibold text-xs mt-3 mb-1 text-slate-700">{children}</h4>,
+                        code: ({ children }) => <code className="bg-slate-100 text-[#111827] px-1.5 py-0.5 rounded text-xs font-mono border border-slate-200/80">{children}</code>,
                       }}
                     >
                       {msg.content}
@@ -117,9 +123,9 @@ export default function CopilotPage() {
         )}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-white border border-slate-200 rounded-3xl rounded-tl-sm px-6 py-4 shadow-sm flex items-center gap-3">
-              <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
-              <span className="text-sm text-slate-500 font-medium">Analyzing your data securely...</span>
+            <div className="bg-white border border-slate-200/80 rounded-3xl rounded-tl-xs px-6 py-4 shadow-2xs flex items-center gap-3">
+              <Loader2 className="w-4 h-4 text-[#111827] animate-spin" />
+              <span className="text-xs text-slate-500 font-medium">Synthesizing workforce telemetry...</span>
             </div>
           </div>
         )}
@@ -127,22 +133,22 @@ export default function CopilotPage() {
       </div>
 
       {/* Input Box */}
-      <div className="p-6 border-t border-slate-200 bg-white">
-        <form onSubmit={handleSubmit} className="flex gap-3">
+      <div className="p-5 border-t border-slate-200/80 bg-white">
+        <form onSubmit={handleSubmit} className="flex items-center gap-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask me anything about your workplace data..."
-            className="flex-1 bg-slate-100 border-none rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all text-slate-700"
+            placeholder="Ask AI Copilot to analyze attendance, apply for time off, or export a report..."
+            className="flex-1 bg-[#FAFAFB] border border-[#E5E7EB] rounded-2xl px-5 py-3.5 outline-none focus:bg-white focus:border-slate-400 transition-all text-sm text-[#111827] placeholder:text-slate-400 font-medium"
             disabled={isLoading}
           />
           <button 
             type="submit" 
             disabled={!input.trim() || isLoading}
-            className="w-14 h-14 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:hover:bg-blue-600 text-white rounded-2xl flex items-center justify-center transition-all shadow-sm"
+            className="w-12 h-12 bg-[#111827] hover:bg-black disabled:opacity-40 text-white rounded-2xl flex items-center justify-center transition-all shadow-sm"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4" />
           </button>
         </form>
       </div>

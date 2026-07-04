@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Download, Trash2, Plus, Search, Loader2, Filter } from "lucide-react";
+import { FileText, Download, Trash2, Plus, Search, Loader2, Filter, X, CheckSquare, Square, MoreHorizontal, ArrowUpRight } from "lucide-react";
 import { generateAndDownloadPDF, PDFExportOptions } from "@/lib/copilot/pdf-export";
 
 interface Report {
@@ -27,7 +27,7 @@ export default function ReportCenterPage() {
       const res = await fetch("/api/reports");
       const data = await res.json();
       if (data.reports) setReports(data.reports);
-    } catch (e: unknown) {
+    } catch {
       console.error("Failed to load reports");
     } finally {
       setLoading(false);
@@ -35,7 +35,6 @@ export default function ReportCenterPage() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchReports(false);
   }, []);
 
@@ -97,137 +96,140 @@ export default function ReportCenterPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900 text-white p-6 rounded-3xl shadow-sm">
+    <div className="space-y-6 animate-fade-in pb-12">
+      
+      {/* Apple & Linear Style Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#E5E7EB] pb-5">
         <div>
-          <h1 className="text-2xl font-bold">AI Report Center</h1>
-          <p className="text-slate-400 text-sm mt-1">Generate, manage, and download Zindle workforce PDF reports securely.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-[#111827]">AI Report Center & Telemetry</h1>
+          <p className="text-xs text-slate-500 mt-1">Generate executive PDF summaries, attendance audits, and leave records</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button 
             disabled={generating}
             onClick={() => handleGenerate("ATTENDANCE")} 
-            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-[#111827] hover:bg-black disabled:opacity-50 text-white text-xs font-semibold rounded-xl shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Attendance PDF
+            {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+            <span>Attendance PDF</span>
           </button>
           <button 
             disabled={generating}
             onClick={() => handleGenerate("LEAVE")} 
-            className="bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 disabled:opacity-50 text-[#111827] border border-slate-200/80 text-xs font-semibold rounded-xl shadow-2xs transition-all active:scale-95 flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Leave PDF
+            <Plus className="w-3.5 h-3.5 text-slate-500" />
+            <span>Leave PDF</span>
           </button>
           <button 
             disabled={generating}
             onClick={() => handleGenerate("EMPLOYEE")} 
-            className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-white hover:bg-slate-50 disabled:opacity-50 text-[#111827] border border-slate-200/80 text-xs font-semibold rounded-xl shadow-2xs transition-all active:scale-95 flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Directory PDF
+            <Plus className="w-3.5 h-3.5 text-slate-500" />
+            <span>Directory PDF</span>
           </button>
         </div>
       </div>
 
-      {/* Filters & Search */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-        <div className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input 
-            type="text"
-            placeholder="Search reports by title or author..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 text-slate-700"
-          />
-        </div>
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Filter className="w-4 h-4 text-slate-400" />
-          <span className="text-xs font-semibold text-slate-500">Filter:</span>
+      {/* Filter Bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           {["ALL", "ATTENDANCE", "LEAVE", "PAYROLL", "EMPLOYEE"].map(type => (
             <button
               key={type}
               onClick={() => setFilterType(type)}
-              className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-colors ${
-                filterType === type ? "bg-slate-900 text-white" : "bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                filterType === type 
+                  ? "bg-[#111827] text-white shadow-xs" 
+                  : "bg-[#F3F4F6] border border-slate-200/80 text-slate-600 hover:bg-slate-200/60"
               }`}
             >
-              {type}
+              {type === "ALL" ? "All Telemetry" : type}
             </button>
           ))}
         </div>
+
+        <div className="flex items-center gap-2 bg-white border border-slate-200/80 rounded-xl px-3 py-1.5 w-full sm:w-64 text-xs shadow-2xs focus-within:border-slate-400 transition-colors">
+          <Search className="w-3.5 h-3.5 text-slate-400" />
+          <input 
+            type="text" 
+            placeholder="Search report archive..." 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="bg-transparent border-none outline-none w-full text-slate-900 placeholder:text-slate-400"
+          />
+        </div>
       </div>
 
-      {/* Reports List */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-        {loading || generating ? (
-          <div className="p-16 flex flex-col items-center justify-center text-slate-400">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-3" />
-            <p className="text-sm font-medium">{generating ? "Generating branded PDF report..." : "Loading reports history..."}</p>
+      {/* ClientEase Style Report Archive Table */}
+      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-slate-400" />
+            <h2 className="font-bold text-[#111827] text-sm">Archived Executive Reports</h2>
+          </div>
+          <span className="text-xs text-slate-400 font-medium">{filteredReports.length} documents indexed</span>
+        </div>
+
+        <div className="grid grid-cols-12 bg-[#FAFAFB] px-6 py-3 text-[11px] font-semibold text-slate-500 border-b border-slate-200/80">
+          <div className="col-span-5">Report Document ↓</div>
+          <div className="col-span-2">Module Type</div>
+          <div className="col-span-3">Generated By & Role</div>
+          <div className="col-span-2 text-right">Actions</div>
+        </div>
+
+        {loading ? (
+          <div className="p-12 flex justify-center items-center">
+            <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
           </div>
         ) : filteredReports.length === 0 ? (
-          <div className="p-16 text-center text-slate-400">
-            <FileText className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-            <h3 className="text-base font-semibold text-slate-700 mb-1">No reports found</h3>
-            <p className="text-xs">Click one of the buttons above or ask AI Copilot to generate your first PDF report!</p>
+          <div className="p-12 text-center text-slate-400 text-sm">
+            No report documents found matching criteria. Click the buttons above to generate a new PDF.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
-                  <th className="p-4 font-semibold">Report Title</th>
-                  <th className="p-4 font-semibold">Type</th>
-                  <th className="p-4 font-semibold">Generated By</th>
-                  <th className="p-4 font-semibold">Role</th>
-                  <th className="p-4 font-semibold">Date</th>
-                  <th className="p-4 font-semibold text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-sm">
-                {filteredReports.map(report => (
-                  <tr key={report.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="p-4 font-medium text-slate-900 flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
-                        <FileText className="w-4 h-4" />
-                      </div>
-                      <span>{report.title}</span>
-                    </td>
-                    <td className="p-4">
-                      <span className="inline-block px-2.5 py-1 text-xs font-semibold bg-slate-100 text-slate-700 rounded-md">
-                        {report.type}
-                      </span>
-                    </td>
-                    <td className="p-4 text-slate-600">{report.generatedBy}</td>
-                    <td className="p-4">
-                      <span className="inline-block px-2 py-0.5 text-[11px] font-bold uppercase bg-blue-50 text-blue-700 rounded border border-blue-200/50">
-                        {report.role}
-                      </span>
-                    </td>
-                    <td className="p-4 text-slate-500 text-xs">
-                      {new Date(report.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="p-4 text-right space-x-2">
-                      <button
-                        onClick={() => handleDownloadAgain(report)}
-                        className="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors inline-flex items-center gap-1.5 text-xs font-semibold"
-                        title="Download PDF"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>PDF</span>
-                      </button>
-                      <button
-                        onClick={() => handleDelete(report.id)}
-                        className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition-colors inline-flex items-center justify-center"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="divide-y divide-slate-200/60 text-xs">
+            {filteredReports.map((report) => (
+              <div key={report.id} className="grid grid-cols-12 items-center px-6 py-3.5 hover:bg-slate-50/60 transition-colors group">
+                <div className="col-span-5 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-[#F4F5F7] border border-slate-200/80 flex items-center justify-center text-[#111827] flex-shrink-0 group-hover:bg-[#111827] group-hover:text-white transition-colors">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-[#111827] leading-none">{report.title}</p>
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      Created on {new Date(report.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })} at {new Date(report.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                  </div>
+                </div>
+                <div className="col-span-2">
+                  <span className="bg-[#F4F5F7] border border-slate-200/80 px-2.5 py-1 rounded-full text-[10px] font-bold text-[#111827] uppercase tracking-wider">
+                    {report.type}
+                  </span>
+                </div>
+                <div className="col-span-3">
+                  <p className="font-medium text-slate-700">{report.generatedBy}</p>
+                  <p className="text-[10px] text-slate-400 uppercase font-semibold mt-0.5">{report.role}</p>
+                </div>
+                <div className="col-span-2 flex items-center justify-end gap-3 text-slate-400">
+                  <button 
+                    onClick={() => handleDownloadAgain(report)}
+                    className="p-1.5 bg-slate-100 hover:bg-[#111827] hover:text-white rounded-lg text-slate-600 transition-colors flex items-center gap-1 text-[11px] font-semibold px-2.5"
+                    title="Download PDF"
+                  >
+                    <Download className="w-3 h-3" />
+                    <span>PDF</span>
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(report.id)}
+                    className="p-1.5 hover:text-red-500 rounded-lg transition-colors"
+                    title="Delete Archive"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

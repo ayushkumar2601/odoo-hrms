@@ -29,12 +29,28 @@
 
 @layer base {
   * {
-    @apply border-slate-200 outline-blue-500/50;
+    @apply border-slate-200/80 outline-slate-800/20;
   }
   body {
-    @apply bg-[#F8FAFC] text-slate-900 font-sans antialiased selection:bg-blue-100;
+    @apply bg-[#FAFAFB] text-[#111827] font-sans antialiased selection:bg-slate-200 selection:text-slate-900;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight text-slate-900;
+    @apply tracking-tight font-semibold text-[#111827];
   }
+}
+
+/* Custom Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
 }
