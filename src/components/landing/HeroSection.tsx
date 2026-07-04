@@ -55,7 +55,7 @@ export function HeroSection() {
           onSubmit={handleSearch}
           className="animate-fade-up [animation-delay:220ms] mt-5 sm:mt-6 w-full max-w-xl mx-auto"
         >
-          <div className="flex items-center gap-3 rounded-full bg-white/60 backdrop-blur-md ring-1 ring-gray-200/80 pl-5 pr-1.5 py-1.5 shadow-sm hover:ring-gray-300 transition-all">
+          <div className="flex items-center gap-3 rounded-full bg-white/70 backdrop-blur-md ring-1 ring-gray-200 pl-5 pr-1.5 py-1.5 shadow-sm hover:ring-gray-400 hover:shadow-md hover:scale-[1.01] transition-all duration-300">
             <input
               type="text"
               value={query}
@@ -66,7 +66,7 @@ export function HeroSection() {
             <button
               type="submit"
               aria-label="Submit query"
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-900 text-white hover:scale-105 active:scale-95 transition-transform shrink-0 flex items-center justify-center shadow-xs"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black text-white hover:scale-105 active:scale-95 transition-transform shrink-0 flex items-center justify-center shadow-xs"
             >
               <ArrowUp className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
             </button>
@@ -76,8 +76,8 @@ export function HeroSection() {
         {/* Description */}
         <p className="animate-fade-up [animation-delay:340ms] mt-4 sm:mt-5 text-gray-700 text-sm sm:text-base lg:text-lg leading-relaxed max-w-md mx-auto font-medium">
           One platform for HR, Attendance, Payroll and Operations.<br />
-          <span className="inline-flex items-center gap-1 mt-1">
-            <Sparkles className="w-4 h-4 text-[#e8553f] inline -mt-0.5" />
+          <span className="inline-flex items-center gap-1.5 mt-1">
+            <Sparkles className="w-4 h-4 text-black inline -mt-0.5 animate-pulse" />
             With AI that tells you what to do next, not just what already happened.
           </span>
         </p>
@@ -87,14 +87,14 @@ export function HeroSection() {
           <button
             type="button"
             onClick={() => router.push("/signin")}
-            className="bg-gray-900 text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 hover:shadow-lg transition-all shadow-sm cursor-pointer"
+            className="bg-black text-white text-sm font-medium px-6 py-2.5 rounded-full hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 shadow-sm cursor-pointer"
           >
             Get Early Access
           </button>
           <button
             type="button"
             onClick={() => router.push("/signin")}
-            className="text-gray-700 text-sm font-medium px-6 py-2.5 rounded-full ring-1 ring-gray-300 hover:bg-gray-100 transition-colors bg-white/40 backdrop-blur-xs cursor-pointer"
+            className="text-gray-900 text-sm font-medium px-6 py-2.5 rounded-full ring-1 ring-gray-300 hover:ring-black hover:bg-gray-100 hover:-translate-y-0.5 transition-all duration-300 bg-white/50 backdrop-blur-xs cursor-pointer"
           >
             Book a Demo
           </button>
