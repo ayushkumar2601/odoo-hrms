@@ -234,7 +234,7 @@ export function FeatureSections() {
                 <div className="text-xs text-white/60">Faster Onboarding</div>
               </div>
               <Link href="/signin" className="bg-white text-black hover:bg-gray-200 text-xs font-bold px-3.5 py-1.5 rounded-full transition-colors">
-                Try Now →
+                Sign In →
               </Link>
             </div>
           </div>
